@@ -1,0 +1,24 @@
+dataSources:
+  ds_0:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    jdbcUrl: jdbc:mysql://localhost:3308/sharding_jdbc_test
+    username: root
+
+rules:
+  - !SHARDING
+    tables: # 数据分片规则配置
+      s_user:
+        actualDataNodes: ds_0.s_user_$->{0..1}
+        databaseStrategy:
+          standard: # 标准分片
+            shardingColumn: id # 分片列名称
+            shardingAlgorithmName: alg_mod # 分片算法名称
+
+    shardingAlgorithms: # 分片算法配置
+      alg_mod:
+        type: INLINE # 分片算法类型
+        props: # 分片算法属性配置
+          algorithm-expression: ds_0.s_user_$->{id % 2}
+
+

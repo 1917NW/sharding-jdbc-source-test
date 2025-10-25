@@ -1,0 +1,29 @@
+
+spring:
+  application:
+    name: sharding-jdbc-test
+
+
+  shardingsphere:
+    datasource:
+      names: ds0
+      #主数据源
+      ds0:
+        type: com.zaxxer.hikari.HikariDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        jdbc-url: jdbc:mysql://localhost:3308/sharding_jdbc_test
+        username: root
+        password: root
+    sharding:
+      tables: # 数据分片规则配置
+        s_user:
+          actual-data-nodes: ds0.s_user_${0..1}
+          table-strategy:
+            inline: # 标准分片
+              sharding-column: id
+              algorithm-expression: s_user_${id % 2}
+
+    props:
+      sql:
+        show: true
+
